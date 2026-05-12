@@ -1,6 +1,0 @@
-@Dishes.WebApi_HostAddress = http://localhost:5228
-
-GET {{Dishes.WebApi_HostAddress}}/weatherforecast/
-Accept: application/json
-
-###
