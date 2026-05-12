@@ -1,6 +1,8 @@
 using Dishes.Application;
+using Dishes.Application.Extensions;
 using Dishes.Infrastructure;
-using Dishes.WebApi;
+using Dishes.Infrastructure.DbContexts;
+using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -10,33 +12,15 @@ builder.Services.AddInfrastructure(builder.Configuration);
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
 app.UseHttpsRedirection();
 
-var summaries = new[]
-{
-    "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
-};
+app.RegisterDishesEndpoints();
+app.RegisterIngredientsEndpoints();
 
-app.MapGet("/weatherforecast", () =>
-{
-    var forecast = Enumerable.Range(1, 5).Select(index =>
-        new WeatherForecast
-        (
-            DateOnly.FromDateTime(DateTime.Now.AddDays(index)),
-            Random.Shared.Next(-20, 55),
-            summaries[Random.Shared.Next(summaries.Length)]
-        ))
-        .ToArray();
-    return forecast;
-});
+using var serviceScope = app.Services.GetRequiredService<IServiceScopeFactory>().CreateScope();
+var serviceProvider = serviceScope.ServiceProvider;
+var dishesDbContext = serviceProvider.GetRequiredService<DishesDbContext>();
+_ = await dishesDbContext.Database.EnsureDeletedAsync();
+await dishesDbContext.Database.MigrateAsync();
 
 app.Run();
-
-namespace Dishes.WebApi
-{
-    internal record WeatherForecast(DateOnly Date, int TemperatureC, string? Summary)
-    {
-        public int TemperatureF => 32 + (int)(TemperatureC / 0.5556);
-    }
-}

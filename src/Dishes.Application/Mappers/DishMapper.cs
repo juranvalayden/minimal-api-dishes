@@ -8,16 +8,23 @@ public class DishMapper : IMapper
 {
     public DishesDto Map(Dish dish)
     {
-        var ingredientDtos = dish
+        var ingredientsDtos = dish
             .Ingredients
-            .Select(CreateIngredientDto)
+            .Select(x => new IngredientDto(x.Id, x.Name, dish.Id))
             .ToList();
 
-        return new DishesDto(dish.Id, dish.Name, ingredientDtos);
+        return new DishesDto(dish.Id, dish.Name, ingredientsDtos);
     }
 
-    private static IngredientDto CreateIngredientDto(Ingredient ingredient)
+    public IEnumerable<DishesDto> Map(IEnumerable<Dish> dishes)
     {
-        return new IngredientDto(ingredient.Id, ingredient.Name);
+        return dishes.Select(Map);
+    }
+
+    public IEnumerable<IngredientDto> Map(Guid dishId, IEnumerable<Ingredient> ingredients)
+    {
+        return ingredients
+            .Select(x => new IngredientDto(x.Id, x.Name, dishId))
+            .ToList();
     }
 }
