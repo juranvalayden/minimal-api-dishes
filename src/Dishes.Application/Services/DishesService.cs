@@ -53,13 +53,13 @@ public class DishesService(IDishesRepository dishRepository, IMapper mapper) : I
 
     public async Task<Response> AddAsync(DishForCreationDto dishForCreationDto, CancellationToken cancellationToken = default)
     {
-        var createdEntity = mapper.MapDtoToEntity(dishForCreationDto);
-        var entity = dishRepository.Add(createdEntity);
+        var entityToBeCreated = mapper.MapDtoToEntity(dishForCreationDto);
+        var createdEntity = dishRepository.Add(entityToBeCreated);
         var hasSaved = await dishRepository.SaveChangesAsync(cancellationToken) > 0;
 
         if (!hasSaved) return DishErrors.NotSaved(dishForCreationDto.Name);
 
-        var createdDto = mapper.Map(entity);
+        var createdDto = mapper.Map(createdEntity);
         return Response<DishDto>.Success(createdDto);
     }
 
@@ -69,23 +69,23 @@ public class DishesService(IDishesRepository dishRepository, IMapper mapper) : I
 
         if (existingEntity is null) return DishErrors.NotFound(dishId);
 
-        var updatedEntity = mapper.MapDtoToEntity(existingEntity, dishForUpdateDto);
-        var entity = dishRepository.Update(updatedEntity);
+        var updatedEntityWithDto = mapper.MapDtoToEntity(existingEntity, dishForUpdateDto);
+        var updatedEntity = dishRepository.Update(updatedEntityWithDto);
         var hasSaved = await dishRepository.SaveChangesAsync(cancellationToken) > 0;
 
         if (!hasSaved) return DishErrors.NotSaved(dishForUpdateDto.Name);
 
-        var updatedDto = mapper.Map(entity);
+        var updatedDto = mapper.Map(updatedEntity);
         return Response<DishDto>.Success(updatedDto);
     }
 
     public async Task<Response> DeleteAsync(Guid dishId, CancellationToken cancellationToken = default)
     {
-        var existingEntity = await dishRepository.GetDishByIdAsync(dishId, false, cancellationToken);
+        var entityToBeDeleted = await dishRepository.GetDishByIdAsync(dishId, false, cancellationToken);
 
-        if (existingEntity is null) return DishErrors.NotFound(dishId);
+        if (entityToBeDeleted is null) return DishErrors.NotFound(dishId);
 
-        var deletedEntity = dishRepository.Delete(existingEntity);
+        var deletedEntity = dishRepository.Delete(entityToBeDeleted);
         var hasSaved = await dishRepository.SaveChangesAsync(cancellationToken) > 0;
 
         if (!hasSaved) return DishErrors.NotSaved(message: $"Error occurred when deleting dish with {dishId}");
