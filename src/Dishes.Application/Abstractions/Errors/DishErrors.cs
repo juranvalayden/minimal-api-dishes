@@ -2,7 +2,7 @@
 
 namespace Dishes.Application.Abstractions.Errors;
 
-public static class DishesErrors
+public static class DishErrors
 {
     public static Error NotFound(Guid dishId) =>
         new(ErrorType.NotFound, $"The dish with id '{dishId}' was not found.");

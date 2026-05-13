@@ -11,7 +11,7 @@ public class DishesService(IDishesRepository dishRepository, IMapper mapper) : I
     {
         var entity = await dishRepository.GetDishByIdAsync(id, shouldIncludeIngredients, cancellationToken);
 
-        if (entity is null) return DishesErrors.NotFound(id);
+        if (entity is null) return DishErrors.NotFound(id);
 
         var dishDto = mapper.Map(entity);
         return Response<DishDto>.Success(dishDto);
@@ -21,7 +21,7 @@ public class DishesService(IDishesRepository dishRepository, IMapper mapper) : I
     {
         var entity = await dishRepository.GetDishByNameAsync(dishName, shouldIncludeIngredients, cancellationToken);
 
-        if (entity is null) return DishesErrors.NotFound(dishName);
+        if (entity is null) return DishErrors.NotFound(dishName);
 
         var dishDto = mapper.Map(entity);
         return Response<DishDto>.Success(dishDto);
@@ -57,7 +57,7 @@ public class DishesService(IDishesRepository dishRepository, IMapper mapper) : I
         var entity = dishRepository.Add(createdEntity);
         var hasSaved = await dishRepository.SaveChangesAsync(cancellationToken) > 0;
 
-        if (!hasSaved) return DishesErrors.NotSaved(dishForCreationDto.Name);
+        if (!hasSaved) return DishErrors.NotSaved(dishForCreationDto.Name);
 
         var createdDto = mapper.Map(entity);
         return Response<DishDto>.Success(createdDto);
@@ -67,13 +67,13 @@ public class DishesService(IDishesRepository dishRepository, IMapper mapper) : I
     {
         var existingEntity = await dishRepository.GetDishByIdAsync(dishId, false, cancellationToken);
 
-        if (existingEntity is null) return DishesErrors.NotFound(dishId);
+        if (existingEntity is null) return DishErrors.NotFound(dishId);
 
         var updatedEntity = mapper.MapDtoToEntity(existingEntity, dishForUpdateDto);
         var entity = dishRepository.Update(updatedEntity);
         var hasSaved = await dishRepository.SaveChangesAsync(cancellationToken) > 0;
 
-        if (!hasSaved) return DishesErrors.NotSaved(dishForUpdateDto.Name);
+        if (!hasSaved) return DishErrors.NotSaved(dishForUpdateDto.Name);
 
         var updatedDto = mapper.Map(entity);
         return Response<DishDto>.Success(updatedDto);
@@ -83,12 +83,12 @@ public class DishesService(IDishesRepository dishRepository, IMapper mapper) : I
     {
         var existingEntity = await dishRepository.GetDishByIdAsync(dishId, false, cancellationToken);
 
-        if (existingEntity is null) return DishesErrors.NotFound(dishId);
+        if (existingEntity is null) return DishErrors.NotFound(dishId);
 
         var deletedEntity = dishRepository.Delete(existingEntity);
         var hasSaved = await dishRepository.SaveChangesAsync(cancellationToken) > 0;
 
-        if (!hasSaved) return DishesErrors.NotSaved(message: $"Error occurred when deleting dish with {dishId}");
+        if (!hasSaved) return DishErrors.NotSaved(message: $"Error occurred when deleting dish with {dishId}");
 
         var deletedDto = mapper.Map(deletedEntity);
         return Response<DishDto>.Success(deletedDto);
