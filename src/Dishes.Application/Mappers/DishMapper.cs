@@ -6,17 +6,12 @@ namespace Dishes.Application.Mappers;
 
 public class DishMapper : IMapper
 {
-    public DishesDto Map(Dish dish)
+    public DishDto Map(Dish dish)
     {
-        var ingredientsDtos = dish
-            .Ingredients
-            .Select(x => new IngredientDto(x.Id, x.Name, dish.Id))
-            .ToList();
-
-        return new DishesDto(dish.Id, dish.Name, ingredientsDtos);
+        return new DishDto(dish.Id, dish.Name);
     }
 
-    public IEnumerable<DishesDto> Map(IEnumerable<Dish> dishes)
+    public IEnumerable<DishDto> Map(IEnumerable<Dish> dishes)
     {
         return dishes.Select(Map);
     }
@@ -26,5 +21,17 @@ public class DishMapper : IMapper
         return ingredients
             .Select(x => new IngredientDto(x.Id, x.Name, dishId))
             .ToList();
+    }
+
+    public Dish MapDtoToEntity(DishForCreationDto dishForCreationDto)
+    {
+        var dishId = Guid.NewGuid();
+        return new Dish(dishId, dishForCreationDto.Name);
+    }
+
+    public Dish MapDtoToEntity(Dish existingEntity, DishForUpdateDto dishForUpdateDto)
+    {
+        existingEntity.Name = dishForUpdateDto.Name;
+        return existingEntity;
     }
 }

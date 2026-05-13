@@ -12,6 +12,8 @@ builder.Services.AddInfrastructure(builder.Configuration);
 
 var app = builder.Build();
 
+app.UseExceptionHandler();
+
 app.UseHttpsRedirection();
 
 app.RegisterDishesEndpoints();

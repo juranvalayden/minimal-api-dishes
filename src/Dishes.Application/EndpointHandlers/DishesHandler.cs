@@ -8,13 +8,13 @@ namespace Dishes.Application.EndpointHandlers;
 
 public static class DishesHandler
 {
-    public static async Task<Ok<IEnumerable<DishesDto>>> GetDishesAsync(IDishService dishService, CancellationToken cancellationToken, [FromQuery] string? name)
+    public static async Task<Ok<IEnumerable<DishDto>>> GetDishesAsync(IDishService dishService, CancellationToken cancellationToken, [FromQuery] string? name)
     {
         var dishDto = await dishService.GetDishesAsync(name, false, cancellationToken);
         return TypedResults.Ok(dishDto);
     }
 
-    public static async Task<Results<NotFound, Ok<DishesDto>>> GetDishByIdAsync(IDishService dishService, CancellationToken cancellationToken, Guid dishId)
+    public static async Task<Results<NotFound, Ok<DishDto>>> GetDishByIdAsync(IDishService dishService, CancellationToken cancellationToken, Guid dishId)
     {
         var dishDto = await dishService.GetDishByIdAsync(dishId, false, cancellationToken);
 
@@ -23,7 +23,7 @@ public static class DishesHandler
         return TypedResults.Ok(dishDto);
     }
 
-    public static async Task<Results<NotFound, Ok<DishesDto>>> GetDishByNameAsync(IDishService dishService, CancellationToken cancellationToken, string dishName)
+    public static async Task<Results<NotFound, Ok<DishDto>>> GetDishByNameAsync(IDishService dishService, CancellationToken cancellationToken, string dishName)
     {
         var dishDto = await dishService.GetDishByNameAsync(dishName, true, cancellationToken);
 

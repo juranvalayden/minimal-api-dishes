@@ -90,14 +90,37 @@ internal class DishesRepository(ILogger<DishesRepository> logger, DishesDbContex
                 .Include(i => i.Ingredients)
                 .FirstOrDefaultAsync(x => x.Id == dishId, cancellationToken);
 
-            return dish?.Ingredients?.Count > 0
-                ? dish.Ingredients
-                : [];
+            if (dish?.Ingredients is not null && dish.Ingredients.Count > 0)
+            {
+                return dish.Ingredients;
+            }
+
+            return [];
         }
         catch (Exception exception)
         {
             logger.LogError(exception, "Error occurred when retrieving dishes.");
             throw;
         }
+    }
+
+    public Dish Add(Dish entity)
+    {
+        return dishesDbContext.Add(entity).Entity;
+    }
+
+    public Dish Update(Dish entity)
+    {
+        return dishesDbContext.Update(entity).Entity;
+    }
+
+    public Dish Delete(Dish entity)
+    {
+        return dishesDbContext.Remove(entity).Entity;
+    }
+
+    public async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
+    {
+        return await dishesDbContext.SaveChangesAsync(cancellationToken);
     }
 }
