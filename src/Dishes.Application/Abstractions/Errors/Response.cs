@@ -1,42 +1,17 @@
 ﻿namespace Dishes.Application.Abstractions.Errors;
 
-public class Response
+public abstract class Response(bool isSuccess, Error? error = null)
 {
-    public bool IsSuccess { get; protected init; }
-    public Error? Error { get; protected init; }
-    
-    protected Response() { }
+    public bool IsSuccess { get; protected init; } = isSuccess;
+    public Error? Error { get; protected init; } = error;
 
-    public static Response Success()
-    {
-        return new Response
-        {
-            IsSuccess = true,
-            Error = null
-        };
-    }
-
-    public static Response Failure(Error error)
-    {
-        return new Response
-        {
-            IsSuccess = true,
-            Error = error
-        };
-    }
+    public static Response Success() => new SuccessResponse();
+    public static Response Failure(Error error) => new FailureResponse(error);
 }
 
-public class Response<TResult> : Response
+public abstract class Response<T>(bool isSuccess, T? data = default, Error? error = null) : Response(isSuccess, error)
 {
-    public TResult? Data { get; protected init; }
+    public T? Data { get; } = data;
 
-    public static Response<TResult> Success(TResult result)
-    {
-        return new Response<TResult>
-        {
-            IsSuccess = true,
-            Error = null,
-            Data = result
-        };
-    }
+    public static Response<T> Success(T data) => new SuccessResponse<T>(data);
 }

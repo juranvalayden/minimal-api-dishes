@@ -1,4 +1,5 @@
-﻿using Dishes.Application.Dtos;
+﻿using Dishes.Application.Abstractions.Errors;
+using Dishes.Application.Dtos;
 using Dishes.Application.Interfaces;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.HttpResults;
@@ -8,27 +9,49 @@ namespace Dishes.Application.EndpointHandlers;
 
 public static class DishesHandler
 {
-    public static async Task<Ok<IEnumerable<DishDto>>> GetDishesAsync(IDishService dishService, CancellationToken cancellationToken, [FromQuery] string? name)
+    public static async Task<Results<BadRequest, Ok<IEnumerable<DishDto>>>> GetDishesAsync(IDishService dishService, [FromQuery] string? name, CancellationToken cancellationToken)
     {
-        var dishDto = await dishService.GetDishesAsync(name, false, cancellationToken);
-        return TypedResults.Ok(dishDto);
+        var response = await dishService.GetDishesAsync(name, false, cancellationToken);
+
+        if (response is Response<IEnumerable<DishDto>> success)
+        {
+            return TypedResults.Ok(success.Data);
+        }
+
+        return TypedResults.BadRequest();
     }
 
-    public static async Task<Results<NotFound, Ok<DishDto>>> GetDishByIdAsync(IDishService dishService, CancellationToken cancellationToken, Guid dishId)
+    public static async Task<Results<NotFound, BadRequest, Ok<DishDto>>> GetDishByIdAsync(IDishService dishService, Guid dishId, CancellationToken cancellationToken)
     {
-        var dishDto = await dishService.GetDishByIdAsync(dishId, false, cancellationToken);
+        var response = await dishService.GetDishByIdAsync(dishId, false, cancellationToken);
 
-        if (dishDto is null) return TypedResults.NotFound();
+        if (response is Response<DishDto> success)
+        {
+            return TypedResults.Ok(success.Data);
+        }
 
-        return TypedResults.Ok(dishDto);
+        if (response.Error!.ErrorType == ErrorType.NotFound)
+        {
+            return TypedResults.NotFound();
+        }
+
+        return TypedResults.BadRequest();
     }
 
-    public static async Task<Results<NotFound, Ok<DishDto>>> GetDishByNameAsync(IDishService dishService, CancellationToken cancellationToken, string dishName)
+    public static async Task<Results<NotFound, BadRequest, Ok<DishDto>>> GetDishByNameAsync(IDishService dishService, string dishName, CancellationToken cancellationToken)
     {
-        var dishDto = await dishService.GetDishByNameAsync(dishName, true, cancellationToken);
+        var response = await dishService.GetDishByNameAsync(dishName, true, cancellationToken);
 
-        if (dishDto is null) return TypedResults.NotFound();
+        if (response is Response<DishDto> success)
+        {
+            return TypedResults.Ok(success.Data);
+        }
 
-        return TypedResults.Ok(dishDto);
+        if (response.Error!.ErrorType == ErrorType.NotFound)
+        {
+            return TypedResults.NotFound();
+        }
+
+        return TypedResults.BadRequest();
     }
 }

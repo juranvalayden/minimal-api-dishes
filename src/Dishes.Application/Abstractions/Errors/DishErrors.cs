@@ -41,6 +41,6 @@ public static class DishErrors
             stringBuilder.Append(message);
         }
 
-        return new(ErrorType.NotSaved, stringBuilder.ToString());
+        return new Error(ErrorType.NotSaved, stringBuilder.ToString());
     }
 }
