@@ -9,6 +9,8 @@ public static class DependencyInjection
     public static void AddApplication(this IServiceCollection services)
     {
         services.AddProblemDetails();
+        services.AddValidation();
+        services.AddOpenApi();
 
         services.AddScoped<IDishService, DishService>();
     }
