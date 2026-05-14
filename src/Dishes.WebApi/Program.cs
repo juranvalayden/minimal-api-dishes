@@ -21,7 +21,7 @@ app.RegisterIngredientsEndpoints();
 
 using var serviceScope = app.Services.GetRequiredService<IServiceScopeFactory>().CreateScope();
 var serviceProvider = serviceScope.ServiceProvider;
-var dishesDbContext = serviceProvider.GetRequiredService<DishesDbContext>();
+var dishesDbContext = serviceProvider.GetRequiredService<DishDbContext>();
 _ = await dishesDbContext.Database.EnsureDeletedAsync();
 await dishesDbContext.Database.MigrateAsync();
 

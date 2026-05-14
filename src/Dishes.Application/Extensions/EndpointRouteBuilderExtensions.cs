@@ -14,9 +14,9 @@ public static class EndpointRouteBuilderExtensions
             var dishWithDishId = dishesEndpoints.MapGroup("/{dishId:guid}");
             var dishWithDishName = dishesEndpoints.MapGroup("/{dishName}");
 
-            dishesEndpoints.MapGet("", DishesHandler.GetDishesAsync);
-            dishWithDishId.MapGet("", DishesHandler.GetDishByIdAsync);
-            dishWithDishName.MapGet("", DishesHandler.GetDishByNameAsync);
+            dishesEndpoints.MapGet("", DishHandler.GetDishesAsync);
+            dishWithDishId.MapGet("", DishHandler.GetDishByIdAsync);
+            dishWithDishName.MapGet("", DishHandler.GetDishByNameAsync);
         }
 
         public void RegisterIngredientsEndpoints()

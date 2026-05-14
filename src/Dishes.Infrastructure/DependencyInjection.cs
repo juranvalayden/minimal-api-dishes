@@ -13,11 +13,11 @@ public static class DependencyInjection
     {
         var connectionString = configuration.GetConnectionString("DefaultConnection");
         
-        services.AddDbContext<DishesDbContext>(options =>
+        services.AddDbContext<DishDbContext>(options =>
         {
             options.UseSqlite(connectionString);
         });
 
-        services.AddScoped<IDishesRepository, DishesRepository>();
+        services.AddScoped<IDishRepository, DishRepository>();
     }
 }

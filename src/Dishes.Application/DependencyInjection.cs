@@ -13,6 +13,6 @@ public static class DependencyInjection
         services.AddProblemDetails();
 
         services.AddScoped<IMapper, DishMapper>();
-        services.AddScoped<IDishService, DishesService>();
+        services.AddScoped<IDishService, DishService>();
     }
 }

@@ -2,7 +2,7 @@
 
 namespace Dishes.Infrastructure.Interfaces;
 
-public interface IDishesRepository
+public interface IDishRepository
 {
     Task<Dish?> GetDishByIdAsync(Guid dishId, bool shouldIncludeIngredients, CancellationToken cancellationToken = default);
     Task<Dish?> GetDishByNameAsync(string dishName, bool shouldIncludeIngredients, CancellationToken cancellationToken = default);

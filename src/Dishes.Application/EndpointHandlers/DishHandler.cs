@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Dishes.Application.EndpointHandlers;
 
-public static class DishesHandler
+public static class DishHandler
 {
     public static async Task<Results<BadRequest, Ok<IEnumerable<DishDto>>>> GetDishesAsync(IDishService dishService, [FromQuery] string? name, CancellationToken cancellationToken)
     {
@@ -38,20 +38,24 @@ public static class DishesHandler
         return TypedResults.BadRequest();
     }
 
-    public static async Task<Results<NotFound, BadRequest, Ok<DishDto>>> GetDishByNameAsync(IDishService dishService, string dishName, CancellationToken cancellationToken)
+    //public static async Task<IResult> GetDishByNameAsync(IDishService dishService, string dishName, CancellationToken cancellationToken)
+    //{
+    //    var response = await dishService.GetDishByNameAsync(dishName, true, cancellationToken);
+
+    //    return ResponseHandler<DishDto>.HandleResponse(response);
+    //}
+
+    //public static async Task<Results<NotFound, BadRequest, Ok<DishDto>>> GetDishByNameAsync(IDishService dishService, string dishName, CancellationToken cancellationToken)
+    //{
+    //    var response = await dishService.GetDishByNameAsync(dishName, true, cancellationToken);
+
+    //    return ResponseHandler<DishDto>.HandleResponse(response);
+    //}
+
+    public static async Task<IResult> GetDishByNameAsync(IDishService dishService, string dishName, CancellationToken cancellationToken)
     {
         var response = await dishService.GetDishByNameAsync(dishName, true, cancellationToken);
 
-        if (response is Response<DishDto> success)
-        {
-            return TypedResults.Ok(success.Data);
-        }
-
-        if (response.Error!.ErrorType == ErrorType.NotFound)
-        {
-            return TypedResults.NotFound();
-        }
-
-        return TypedResults.BadRequest();
+        return ResponseHandler.HandleResponse<DishDto>(response);
     }
 }

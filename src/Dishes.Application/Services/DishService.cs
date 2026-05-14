@@ -5,7 +5,7 @@ using Dishes.Infrastructure.Interfaces;
 
 namespace Dishes.Application.Services;
 
-public class DishesService(IDishesRepository dishRepository, IMapper mapper) : IDishService
+public class DishService(IDishRepository dishRepository, IMapper mapper) : IDishService
 {
     public async Task<Response> GetDishByIdAsync(Guid id, bool shouldIncludeIngredients, CancellationToken cancellationToken = default)
     {

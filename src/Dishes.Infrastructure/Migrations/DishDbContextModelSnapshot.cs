@@ -3,19 +3,16 @@ using System;
 using Dishes.Infrastructure.DbContexts;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
-using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
 
 namespace Dishes.Infrastructure.Migrations
 {
-    [DbContext(typeof(DishesDbContext))]
-    [Migration("20260512112107_Initial")]
-    partial class Initial
+    [DbContext(typeof(DishDbContext))]
+    partial class DishDbContextModelSnapshot : ModelSnapshot
     {
-        /// <inheritdoc />
-        protected override void BuildTargetModel(ModelBuilder modelBuilder)
+        protected override void BuildModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "10.0.7");

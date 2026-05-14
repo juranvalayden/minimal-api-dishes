@@ -6,7 +6,7 @@ using Microsoft.Extensions.Logging;
 
 namespace Dishes.Infrastructure.Repositories;
 
-internal class DishesRepository(ILogger<DishesRepository> logger, DishesDbContext dishesDbContext) : IDishesRepository
+internal class DishRepository(ILogger<DishRepository> logger, DishDbContext dishesDbContext) : IDishRepository
 {
     public async Task<Dish?> GetDishByIdAsync(Guid dishId, bool shouldIncludeIngredients, CancellationToken cancellationToken = default)
     {
