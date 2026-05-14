@@ -63,5 +63,7 @@ Authorization: Bearer {{token}}
 POST {{baseUrl}}/dishes
 Content-Type: application/json
 Authorization: Bearer {{token}}
-
 {}
+
+### Throws an error
+GET {{baseUrl}}/tests

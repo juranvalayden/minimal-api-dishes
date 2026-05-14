@@ -38,24 +38,66 @@ public static class DishHandler
         return TypedResults.BadRequest();
     }
 
-    //public static async Task<IResult> GetDishByNameAsync(IDishService dishService, string dishName, CancellationToken cancellationToken)
-    //{
-    //    var response = await dishService.GetDishByNameAsync(dishName, true, cancellationToken);
-
-    //    return ResponseHandler<DishDto>.HandleResponse(response);
-    //}
-
-    //public static async Task<Results<NotFound, BadRequest, Ok<DishDto>>> GetDishByNameAsync(IDishService dishService, string dishName, CancellationToken cancellationToken)
-    //{
-    //    var response = await dishService.GetDishByNameAsync(dishName, true, cancellationToken);
-
-    //    return ResponseHandler<DishDto>.HandleResponse(response);
-    //}
-
-    public static async Task<IResult> GetDishByNameAsync(IDishService dishService, string dishName, CancellationToken cancellationToken)
+    public static async Task<Results<NotFound, BadRequest, Ok<DishDto>>> GetDishByNameAsync(IDishService dishService, string dishName, CancellationToken cancellationToken)
     {
         var response = await dishService.GetDishByNameAsync(dishName, true, cancellationToken);
 
-        return ResponseHandler.HandleResponse<DishDto>(response);
+        if (response is Response<DishDto> success)
+        {
+            return TypedResults.Ok(success.Data);
+        }
+
+        if (response.Error!.ErrorType == ErrorType.NotFound)
+        {
+            return TypedResults.NotFound();
+        }
+
+        return TypedResults.BadRequest();
+    }
+
+    public static async Task<Results<CreatedAtRoute<DishDto>, BadRequest>> CreateDishAsync(IDishService dishService, DishForCreationDto dishForCreationDto, CancellationToken cancellationToken)
+    {
+        var response = await dishService.AddAsync(dishForCreationDto, cancellationToken);
+
+        if (response.IsSuccess && response is Response<DishDto> success)
+        {
+            return TypedResults.CreatedAtRoute(success.Data, "GetDish", new { dishId = success.Data!.Id });
+        }
+
+        return TypedResults.BadRequest();
+    }
+
+    public static async Task<Results<NoContent, NotFound, BadRequest>> UpdateDishAsync(IDishService dishService, Guid dishId, DishForUpdateDto dishForUpdateDto, CancellationToken cancellationToken)
+    {
+        var response = await dishService.UpdateAsync(dishId, dishForUpdateDto, cancellationToken);
+
+        if (response.IsSuccess)
+        {
+            return TypedResults.NoContent();
+        }
+
+        if (response.Error!.ErrorType == ErrorType.NotFound)
+        {
+            return TypedResults.NotFound();
+        }
+
+        return TypedResults.BadRequest();
+    }
+
+    public static async Task<Results<NoContent, NotFound, BadRequest>> DeleteDishAsync(IDishService dishService, Guid dishId, CancellationToken cancellationToken)
+    {
+        var response = await dishService.DeleteAsync(dishId, cancellationToken);
+
+        if (response.IsSuccess)
+        {
+            return TypedResults.NoContent();
+        }
+
+        if (response.Error!.ErrorType == ErrorType.NotFound)
+        {
+            return TypedResults.NotFound();
+        }
+
+        return TypedResults.BadRequest();
     }
 }

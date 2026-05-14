@@ -11,17 +11,28 @@ public static class EndpointRouteBuilderExtensions
         public void RegisterDishesEndpoints()
         {
             var dishesEndpoints = endpointRouteBuilder.MapGroup("/dishes");
-            var dishWithDishId = dishesEndpoints.MapGroup("/{dishId:guid}");
-            var dishWithDishName = dishesEndpoints.MapGroup("/{dishName}");
-
+            var dishWithGuidIdEndpoints = dishesEndpoints.MapGroup("/{dishId:guid}");
+            
             dishesEndpoints.MapGet("", DishHandler.GetDishesAsync);
-            dishWithDishId.MapGet("", DishHandler.GetDishByIdAsync);
-            dishWithDishName.MapGet("", DishHandler.GetDishByNameAsync);
+            
+            dishWithGuidIdEndpoints
+                .MapGet("", DishHandler.GetDishByIdAsync)
+                .WithName("GetDish");
+
+            dishesEndpoints
+                .MapGet("/{dishName}", DishHandler.GetDishByNameAsync)
+                .AllowAnonymous();
+
+            dishesEndpoints.MapPost("", DishHandler.CreateDishAsync);
+            dishWithGuidIdEndpoints.MapPut("", DishHandler.UpdateDishAsync);
+            dishWithGuidIdEndpoints.MapDelete("", DishHandler.DeleteDishAsync);
         }
 
         public void RegisterIngredientsEndpoints()
         {
-            var ingredientsEndpoints = endpointRouteBuilder.MapGroup("/dishes/{dishId:guid}/ingredients");
+            var ingredientsEndpoints = endpointRouteBuilder
+                .MapGroup("/dishes/{dishId:guid}/ingredients")
+                .RequireAuthorization();
             ingredientsEndpoints.MapGet("", IngredientsHandler.GetIngredientsByDishIdAsync);
         }
     }

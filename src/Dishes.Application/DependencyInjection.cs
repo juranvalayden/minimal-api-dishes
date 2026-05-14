@@ -1,6 +1,4 @@
-﻿using Dishes.Application.Interfaces;
-using Dishes.Application.Mappers;
-using Dishes.Application.Services;
+﻿using Dishes.Application.Services;
 using Microsoft.Extensions.DependencyInjection;
 using IDishService = Dishes.Application.Interfaces.IDishService;
 
@@ -12,7 +10,6 @@ public static class DependencyInjection
     {
         services.AddProblemDetails();
 
-        services.AddScoped<IMapper, DishMapper>();
         services.AddScoped<IDishService, DishService>();
     }
 }
