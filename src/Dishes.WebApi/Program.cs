@@ -17,8 +17,7 @@ if (app.Environment.IsProduction())
 {
     app.UseExceptionHandler();
 }
-
-if (app.Environment.IsDevelopment() || app.Environment.IsStaging())
+else
 {
     // may only want to expose this in dev/test environments
     app.MapScalarApiReference();
